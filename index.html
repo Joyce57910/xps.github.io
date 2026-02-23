@@ -2,772 +2,432 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>剪刀石头布 · 手机版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔮宿命恋人画像测试</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        :root {
+            --primary-color: #9B59B6; /* 浪漫紫 */
+            --accent-color: #E056FD; /* 亮粉紫 */
+            --bg-color: #F3E5F5;
+            --card-bg: #FFFFFF;
+            --text-color: #4A235A;
         }
 
         body {
-            background: linear-gradient(145deg, #4776E6 0%, #8E54E9 100%);
-            min-height: 100vh;
-            min-height: 100dvh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 8px;
+            min-height: 100vh;
         }
 
-        .game-container {
-            max-width: 450px;
+        .container {
             width: 100%;
-            height: 98dvh;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 32px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
+            max-width: 400px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(155, 89, 182, 0.15);
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 30px;
+            position: relative;
         }
 
-        /* 头部区域 */
-        .game-header {
-            background: linear-gradient(145deg, #4776E6 0%, #8E54E9 100%);
-            color: white;
-            padding: 16px 12px 12px;
+        .header {
+            background: linear-gradient(135deg, #c471ed 0%, #f64f59 100%);
+            padding: 40px 20px;
             text-align: center;
-            flex-shrink: 0;
+            color: #fff;
+            position: relative;
+        }
+        
+        /* 装饰性星星 */
+        .header::after {
+            content: '✨';
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 24px;
+            opacity: 0.8;
         }
 
-        .game-header h1 {
-            font-size: 1.8rem;
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
             font-weight: 700;
-            margin-bottom: 4px;
-            letter-spacing: 1px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        .game-header p {
-            font-size: 0.85rem;
+        .header p {
+            margin-top: 10px;
             opacity: 0.95;
+            font-size: 14px;
             font-weight: 300;
         }
 
-        /* 规则区域 - 极简设计 */
-        .rules-section {
-            background: rgba(248, 249, 250, 0.9);
-            padding: 10px 12px;
-            border-bottom: 1px solid rgba(222, 226, 230, 0.5);
-            flex-shrink: 0;
+        .content {
+            padding: 25px;
         }
 
-        .rules-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
+        .question-block {
+            display: none;
+        }
+        
+        .question-block.active {
+            display: block;
+            animation: fadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        .rule-item {
-            background: white;
-            padding: 6px 4px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: #495057;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        .question-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            color: #2c3e50;
         }
 
-        .rule-icon {
-            font-size: 1rem;
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 15px;
+            border: 1px solid #E1BEE7;
+            border-radius: 15px;
+            background: #fff;
+            text-align: left;
+            font-size: 15px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
-        .score-rule {
-            text-align: center;
-            margin-top: 6px;
-            font-size: 0.7rem;
-            color: #6c757d;
-            font-weight: 500;
+        .option-btn:active {
+            background-color: #F3E5F5;
+            border-color: var(--primary-color);
+            transform: scale(0.98);
         }
 
-        /* 计分板 - 毛玻璃效果 */
-        .scoreboard {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(5px);
-            padding: 10px 15px;
-            border-bottom: 1px solid rgba(222, 226, 230, 0.5);
-            flex-shrink: 0;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            text-align: center;
-        }
-
-        .stat-item {
-            background: white;
-            padding: 8px 4px;
-            border-radius: 16px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-
-        .stat-label {
-            font-size: 0.65rem;
-            color: #6c757d;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2d3436;
-            line-height: 1;
-        }
-
-        .stat-value.score {
-            color: #00b894;
-        }
-
-        /* 游戏主区域 */
-        .game-main {
-            padding: 12px 12px 10px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .progress-bar {
+            height: 6px;
+            background: #F0F0F0;
+            margin-bottom: 25px;
+            border-radius: 3px;
             overflow: hidden;
         }
-
-        .round-info {
-            text-align: center;
-            font-size: 0.85rem;
-            color: #636e72;
-            font-weight: 500;
-            background: rgba(255,255,255,0.5);
-            padding: 6px;
-            border-radius: 30px;
-            margin: 0 20px;
-        }
-
-        /* 选择按钮 - 手机友好大按钮 */
-        .choice-buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .choice-btn {
-            aspect-ratio: 1;
-            border: none;
-            border-radius: 20px;
-            background: linear-gradient(145deg, #4776E6, #8E54E9);
-            color: white;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            box-shadow: 0 8px 16px rgba(71, 118, 230, 0.3);
-            border: 2px solid rgba(255,255,255,0.3);
-            padding: 8px 4px;
-        }
-
-        .choice-btn:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 8px rgba(71, 118, 230, 0.4);
-        }
-
-        .choice-btn .emoji {
-            font-size: 1.6rem;
-        }
-
-        .exit-btn {
-            background: linear-gradient(145deg, #ff7675, #d63031);
-            box-shadow: 0 8px 16px rgba(255, 118, 117, 0.3);
-        }
-
-        /* 对战区域 - 突出显示 */
-        .battle-area {
-            background: linear-gradient(145deg, #74b9ff20, #a29bfe20);
-            border-radius: 28px;
-            padding: 12px 10px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-            border: 2px solid rgba(255,255,255,0.8);
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
-        }
-
-        .battle-title {
-            text-align: center;
-            font-size: 0.8rem;
-            color: #636e72;
-            margin-bottom: 6px;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        .battle-show {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 6px;
-            flex: 2;
-            min-height: 0;
-        }
-
-        .player-choice, .computer-choice {
-            text-align: center;
-            flex: 1;
-            background: white;
-            border-radius: 24px;
-            padding: 12px 4px;
-            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        
+        .progress-fill {
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border: 2px solid rgba(255,255,255,0.9);
+            background: linear-gradient(90deg, #c471ed, #f64f59);
+            width: 0%;
+            transition: width 0.4s ease;
         }
 
-        .choice-label {
-            font-size: 0.75rem;
-            color: #7f8c8d;
-            margin-bottom: 6px;
-        }
-
-        .choice-label span {
-            font-size: 0.9rem;
-            margin-right: 3px;
-        }
-
-        .choice-display {
-            font-size: 3.2rem;
-            margin: 4px 0;
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0); }
-            80% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        .choice-name {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #2d3436;
-        }
-
-        .vs-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .vs {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #636e72;
-            background: white;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-            border: 2px solid #dfe6e9;
-        }
-
-        /* 结果消息 - 超大醒目 */
-        .result-message {
-            text-align: center;
-            font-size: 1rem;
-            font-weight: 700;
-            padding: 12px 8px;
-            border-radius: 40px;
-            margin: 8px 0 4px;
-            animation: slideUp 0.3s ease;
-            border: 2px solid;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            background: white;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(10px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .result-message.win {
-            background: #00b894;
-            color: white;
-            border-color: #00a884;
-        }
-
-        .result-message.lose {
-            background: #ff7675;
-            color: white;
-            border-color: #ff6b6b;
-        }
-
-        .result-message.tie {
-            background: #fdcb6e;
-            color: white;
-            border-color: #fdcb6e;
-        }
-
-        /* 电脑预览 */
-        .computer-preview {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 6px;
-            padding: 6px;
-            background: rgba(255,255,255,0.5);
-            border-radius: 40px;
-        }
-
-        .preview-item {
-            font-size: 1.2rem;
-            opacity: 0.3;
-            transition: all 0.2s ease;
-        }
-
-        .preview-item.active {
-            opacity: 1;
-            transform: scale(1.3);
-        }
-
-        /* 历史记录 - 横向滑动 */
-        .history-section {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(5px);
-            border-radius: 30px;
-            padding: 10px 12px;
-            flex-shrink: 0;
-            border: 1px solid rgba(255,255,255,0.8);
-        }
-
-        .history-title {
-            font-size: 0.75rem;
-            color: #636e72;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-weight: 600;
-        }
-
-        .history-list {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 2px 0 6px;
-            scrollbar-width: thin;
-            -webkit-overflow-scrolling: touch;
-            min-height: 44px;
-        }
-
-        .history-list::-webkit-scrollbar {
-            height: 3px;
-        }
-
-        .history-list::-webkit-scrollbar-thumb {
-            background: #b2bec3;
-            border-radius: 3px;
-        }
-
-        .history-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: white;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            flex-shrink: 0;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .history-item.win {
-            background: #00b894;
-            color: white;
-        }
-
-        .history-item.lose {
-            background: #ff7675;
-            color: white;
-        }
-
-        .history-item.tie {
-            background: #fdcb6e;
-            color: white;
-        }
-
-        .history-round {
-            font-weight: 700;
-            margin-right: 2px;
-        }
-
-        .history-choices {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-        }
-
-        /* 模态框 - 手机优化 */
-        .modal {
+        .pay-wall {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 30px 25px;
-            border-radius: 40px;
-            max-width: 380px;
-            width: 100%;
             text-align: center;
-            animation: modalSlide 0.3s ease;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            padding: 40px 15px;
         }
 
-        @keyframes modalSlide {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .pay-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+            display: block;
         }
 
-        .modal h2 {
-            color: #2d3436;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
+        .pay-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
         }
 
-        .final-stats {
-            margin: 25px 0;
-            text-align: left;
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 24px;
-        }
-
-        .final-stat-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #e9ecef;
-            font-size: 1rem;
-        }
-
-        .final-stat-item:last-child {
-            border-bottom: none;
-        }
-
-        .final-score {
-            font-size: 2.5rem;
+        .pay-price {
+            font-size: 42px;
             font-weight: 800;
-            color: #00b894;
+            color: var(--primary-color);
             margin: 15px 0;
-            text-shadow: 0 2px 4px rgba(0,184,148,0.2);
+            font-family: 'Arial', sans-serif;
         }
 
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .modal-btn {
-            flex: 1;
-            padding: 16px 10px;
-            border: none;
-            border-radius: 30px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 2px solid transparent;
-        }
-
-        .modal-btn.primary {
-            background: linear-gradient(145deg, #4776E6, #8E54E9);
+        .pay-btn {
+            background: linear-gradient(135deg, #c471ed 0%, #f64f59 100%);
             color: white;
+            border: none;
+            padding: 16px 50px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(246, 79, 89, 0.3);
+            width: 100%;
+            transition: transform 0.2s;
         }
-
-        .modal-btn.secondary {
-            background: #f1f3f5;
-            color: #495057;
-            border-color: #dee2e6;
-        }
-
-        .modal-btn:active {
+        
+        .pay-btn:active {
             transform: scale(0.95);
         }
 
-        /* 触摸优化 */
-        .choice-btn, .modal-btn {
-            touch-action: manipulation;
+        .result-page {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            animation: fadeIn 0.8s;
         }
 
-        /* 刘海屏适配 */
-        @supports (padding: max(0px)) {
-            .game-container {
-                height: calc(98dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-            }
+        .result-header {
+            font-size: 14px;
+            color: #888;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .result-title {
+            font-size: 26px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .result-card {
+            background: #FFF;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: left;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        
+        .result-label {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+            display: block;
+            font-size: 14px;
+        }
+
+        .result-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 15px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <!-- 头部 -->
-        <div class="game-header">
-            <h1>✂️ 石头剪刀布</h1>
-            <p>点击手势开始对战</p>
-        </div>
 
-        <!-- 规则 -->
-        <div class="rules-section">
-            <div class="rules-grid">
-                <div class="rule-item"><span class="rule-icon">✂️</span>剪刀</div>
-                <div class="rule-item"><span class="rule-icon">🪨</span>石头</div>
-                <div class="rule-item"><span class="rule-icon">📄</span>布</div>
-                <div class="rule-item"><span class="rule-icon">🤝</span>平局</div>
-            </div>
-            <div class="score-rule">⚡ 赢 +1 · 输 -1 · 平 0</div>
-        </div>
-
-        <!-- 计分板 -->
-        <div class="scoreboard">
-            <div class="stats-grid">
-                <div class="stat-item"><div class="stat-label">积分</div><div class="stat-value score" id="score">0</div></div>
-                <div class="stat-item"><div class="stat-label">胜</div><div class="stat-value" id="wins">0</div></div>
-                <div class="stat-item"><div class="stat-label">负</div><div class="stat-value" id="losses">0</div></div>
-                <div class="stat-item"><div class="stat-label">平</div><div class="stat-value" id="ties">0</div></div>
-            </div>
-        </div>
-
-        <!-- 游戏主区域 -->
-        <div class="game-main">
-            <div class="round-info">第 <span id="round">1</span> 轮</div>
-
-            <!-- 选择按钮 -->
-            <div class="choice-buttons">
-                <button class="choice-btn" onclick="play(1)"><span class="emoji">✂️</span>剪刀</button>
-                <button class="choice-btn" onclick="play(2)"><span class="emoji">🪨</span>石头</button>
-                <button class="choice-btn" onclick="play(3)"><span class="emoji">📄</span>布</button>
-                <button class="choice-btn exit-btn" onclick="showExitModal()"><span class="emoji">🚪</span>退出</button>
-            </div>
-
-            <!-- 对战区域 -->
-            <div class="battle-area">
-                <div class="battle-title">⚔️ 实时对战 ⚔️</div>
-                <div class="battle-show">
-                    <div class="player-choice">
-                        <div class="choice-label"><span>👤</span> 你</div>
-                        <div class="choice-display" id="playerChoiceDisplay">❓</div>
-                        <div class="choice-name" id="playerChoiceName">等待</div>
-                    </div>
-                    <div class="vs-container"><div class="vs">VS</div></div>
-                    <div class="computer-choice">
-                        <div class="choice-label"><span>🤖</span> 电脑</div>
-                        <div class="choice-display" id="computerChoiceDisplay">❓</div>
-                        <div class="choice-name" id="computerChoiceName">等待</div>
-                    </div>
-                </div>
-                <div class="result-message" id="resultMessage"></div>
-                <div class="computer-preview" id="computerPreview">
-                    <span class="preview-item" id="preview1">✂️</span>
-                    <span class="preview-item" id="preview2">🪨</span>
-                    <span class="preview-item" id="preview3">📄</span>
-                </div>
-            </div>
-
-            <!-- 历史记录 -->
-            <div class="history-section">
-                <div class="history-title"><span>📋</span> 最近记录</div>
-                <div class="history-list" id="historyList"></div>
-            </div>
-        </div>
+<div class="container">
+    <div class="header">
+        <h1>🔮 宿命恋人画像</h1>
+        <p>测测TA会带着什么剧本闯入你的生活？</p>
     </div>
 
-    <!-- 退出模态框 -->
-    <div class="modal" id="exitModal">
-        <div class="modal-content">
-            <h2>📊 游戏统计</h2>
-            <div class="final-stats">
-                <div class="final-stat-item"><span>总轮数</span><span id="finalRounds">0</span></div>
-                <div class="final-stat-item"><span>获胜</span><span id="finalWins">0</span></div>
-                <div class="final-stat-item"><span>失败</span><span id="finalLosses">0</span></div>
-                <div class="final-stat-item"><span>平局</span><span id="finalTies">0</span></div>
+    <div class="content">
+        <div class="progress-bar" id="progressBar" style="display:none;">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- 题目区域 -->
+        <div id="quizContainer">
+            <!-- JS生成题目 -->
+        </div>
+
+        <!-- 支付墙 -->
+        <div id="payWall" class="pay-wall">
+            <span class="pay-icon">💌</span>
+            <div class="pay-title">分析已完成</div>
+            <p style="color:#666; font-size:14px;">查收属于你的恋爱剧本</p>
+            <div class="pay-price">¥ 1.99</div>
+            <button class="pay-btn" onclick="simulatePayment()">解锁完整画像 🔓</button>
+            <p style="margin-top:15px; font-size:12px; color:#999;">已有 23,402 人获取了她们的剧本</p>
+        </div>
+
+        <!-- 结果页 -->
+        <div id="resultPage" class="result-page">
+            <div class="result-header">YOUR DESTINY</div>
+            <h2 class="result-title" id="resTitle"></h2>
+            
+            <div class="result-card">
+                <span class="result-label">👤 他的画像</span>
+                <div class="result-text" id="resDesc"></div>
             </div>
-            <div class="final-score" id="finalScore">0 分</div>
-            <div id="finalComment" style="margin-bottom: 20px; color: #636e72; font-size: 1.1rem;"></div>
-            <div class="modal-buttons">
-                <button class="modal-btn primary" onclick="restartGame()">新游戏</button>
-                <button class="modal-btn secondary" onclick="closeModal()">继续</button>
+            
+            <div class="result-card">
+                <span class="result-label">🎬 宿命剧本</span>
+                <div class="result-text" id="resScript"></div>
             </div>
+            
+            <button class="option-btn" style="text-align:center; background:#f0f0f0; border:none;" onclick="location.reload()">再测一次 ↻</button>
         </div>
     </div>
+</div>
 
-    <script>
-        // 游戏状态
-        let score = 0, wins = 0, losses = 0, ties = 0, round = 1;
-        let history = [];
-        let currentComputerChoice = null;
-
-        function getChoiceInfo(choice) {
-            const choices = {1: {emoji: '✂️', name: '剪刀'}, 2: {emoji: '🪨', name: '石头'}, 3: {emoji: '📄', name: '布'}};
-            return choices[choice] || {emoji: '❓', name: '未知'};
+<script>
+    // 题目配置
+    const questions = [
+        {
+            title: "Q1. 周末午后外面下着暴雨，你一个人在家最想做的是？",
+            options: [
+                { text: "A. 窝在沙发看老电影，手里捧着热可可", type: "A" },
+                { text: "B. 听着雨声整理房间，做顿精致料理", type: "B" },
+                { text: "C. 给朋友打视频电话，吐槽最近趣事", type: "C" },
+                { text: "D. 打开电脑处理工作，或者看书充电", type: "D" }
+            ]
+        },
+        {
+            title: "Q2. 手机没电在陌生城市迷路，你的第一反应？",
+            options: [
+                { text: "A. 有点慌，寻找看起来面善的路人求助", type: "A" },
+                { text: "B. 进便利店借充电宝或看地图", type: "B" },
+                { text: "C. 直接拦出租车，先离开这再说", type: "D" },
+                { text: "D. 觉得有点刺激，干脆四处逛逛", type: "C" }
+            ]
+        },
+        {
+            title: "Q3. 闭上眼想象，你理想中的婚礼在哪里？",
+            options: [
+                { text: "A. 私密海岛，只有至亲，海风吹起白纱", type: "A" },
+                { text: "B. 传统隆重的酒店，接受长辈祝福", type: "B" },
+                { text: "C. 疯狂的草地派对，大家嗨到天亮", type: "C" },
+                { text: "D. 不一定要婚礼，旅行结婚就好", type: "D" }
+            ]
+        },
+        {
+            title: "Q4. 你希望他忙碌一天回家后，对你说的第一句话？",
+            options: [
+                { text: "A. “见到你我就充满了电。”", type: "A" },
+                { text: "B. “买了你爱吃的蛋糕，在冰箱里。”", type: "B" },
+                { text: "C. “快来！今天有个大瓜要跟你讲！”", type: "C" },
+                { text: "D. “今天辛苦了，以后这种累活交给我。”", type: "D" }
+            ]
+        },
+        {
+            title: "Q5. 你的理想恋爱像哪部电影？",
+            options: [
+                { text: "A. 《爱在黎明破晓前》- 灵魂碰撞", type: "A" },
+                { text: "B. 《请回答1988》- 温暖陪伴", type: "B" },
+                { text: "C. 《疯狂动物城》- 冒险搭档", type: "C" },
+                { text: "D. 《史密斯夫妇》- 强强联手", type: "D" }
+            ]
+        },
+        {
+            title: "Q6. 你最不能接受伴侣的一点是？",
+            options: [
+                { text: "A. 没有共情能力，冷漠", type: "A" },
+                { text: "B. 不顾家，总是玩消失", type: "B" },
+                { text: "C. 无趣死板，开不起玩笑", type: "C" },
+                { text: "D. 没有上进心，得过且过", type: "D" }
+            ]
         }
+    ];
 
-        function getComputerChoice() {
-            return Math.floor(Math.random() * 3) + 1;
+    // 结果配置
+    const results = {
+        "A": {
+            title: "🌌 星河摆渡人 (灵魂伴侣型)",
+            desc: "眼神深邃，手指修长，可能从事艺术、文学或科研工作。他不善言辞，但内心世界极其丰富。",
+            script: "你们的相遇像是一场久别重逢。可能是在书店、画展或者某个安静的角落。他能听懂你所有未说出口的话，他爱的不是你的皮囊，而是你破碎又迷人的灵魂。"
+        },
+        "B": {
+            title: "🔥 暖冬守夜人 (爹系宠溺型)",
+            desc: "肩膀宽厚，笑起来很温暖，衣着干净整洁。职业稳定（医生、教师、公务员）。",
+            script: "他比你稍微年长，或者心理年龄很成熟。在你最疲惫、最狼狈的时候，他会替你挡住所有风雨。他对你的爱藏在每一顿热饭和每一个吹干头发的细节里。"
+        },
+        "C": {
+            title: "🪁 夏日追风者 (少年玩伴型)",
+            desc: "充满活力，有虎牙或酒窝，运动型。可能是创业者、自由职业或体育相关。",
+            script: "你们是吵吵闹闹的欢喜冤家。他会带你去跳伞、去深潜、去看不一样的世界。和他在一起，你永远不会老，每天都是新鲜的冒险。他是你的恋人，也是你最好的玩伴。"
+        },
+        "D": {
+            title: "♟️ 暗夜执棋者 (霸总/势均力敌型)",
+            desc: "气场强大，西装革履，行事果断。企业高管或精英律师。",
+            script: "你们是“王见王”的相遇。起初可能互看不顺眼，或者在职场上交锋。但他欣赏你的独立和野心。他不需要你做依附的小鸟，他要你做与他并肩作战的王后。"
         }
+    };
 
-        function updateComputerPreview(choice) {
-            ['preview1', 'preview2', 'preview3'].forEach(id => document.getElementById(id).classList.remove('active'));
-            if (choice) document.getElementById(`preview${choice}`).classList.add('active');
-        }
+    let currentStep = 0;
+    let scores = { A: 0, B: 0, C: 0, D: 0 };
 
-        function determineWinner(player, computer) {
-            if (player === computer) return 'tie';
-            if ((player === 1 && computer === 3) || (player === 2 && computer === 1) || (player === 3 && computer === 2)) return 'win';
-            return 'lose';
-        }
-
-        function updateUI() {
-            document.getElementById('score').textContent = score;
-            document.getElementById('wins').textContent = wins;
-            document.getElementById('losses').textContent = losses;
-            document.getElementById('ties').textContent = ties;
-            document.getElementById('round').textContent = round;
-        }
-
-        function addToHistory(playerChoice, computerChoice, result) {
-            const player = getChoiceInfo(playerChoice);
-            const computer = getChoiceInfo(computerChoice);
-            history.unshift({round, player: player.emoji, computer: computer.emoji, result});
-            if (history.length > 8) history.pop();
-            
-            const historyList = document.getElementById('historyList');
-            historyList.innerHTML = history.length ? '' : '<div class="history-item">暂无记录</div>';
-            history.forEach(item => {
-                const el = document.createElement('div');
-                el.className = `history-item ${item.result}`;
-                el.innerHTML = `<span class="history-round">#${item.round}</span><span class="history-choices">${item.player} vs ${item.computer}</span>`;
-                historyList.appendChild(el);
-            });
-        }
-
-        function updateBattleDisplay(playerChoice, computerChoice, result) {
-            const player = getChoiceInfo(playerChoice);
-            const computer = getChoiceInfo(computerChoice);
-            
-            document.getElementById('playerChoiceDisplay').textContent = player.emoji;
-            document.getElementById('playerChoiceName').textContent = player.name;
-            document.getElementById('computerChoiceDisplay').textContent = computer.emoji;
-            document.getElementById('computerChoiceName').textContent = computer.name;
-            
-            updateComputerPreview(computerChoice);
-            
-            const msg = document.getElementById('resultMessage');
-            const messages = {
-                win: `🎉 你的${player.name}赢了！ +1分`,
-                lose: `😢 你的${player.name}输了！ -1分`,
-                tie: `🤝 平局！都是${player.name}`
-            };
-            msg.textContent = messages[result];
-            msg.className = `result-message ${result}`;
-        }
-
-        function play(playerChoice) {
-            const computerChoice = getComputerChoice();
-            const result = determineWinner(playerChoice, computerChoice);
-            
-            if (result === 'win') { score++; wins++; }
-            else if (result === 'lose') { score--; losses++; }
-            else ties++;
-            
-            updateBattleDisplay(playerChoice, computerChoice, result);
-            addToHistory(playerChoice, computerChoice, result);
-            updateUI();
-            round++;
-        }
-
-        function showExitModal() {
-            document.getElementById('finalRounds').textContent = round - 1;
-            document.getElementById('finalWins').textContent = wins;
-            document.getElementById('finalLosses').textContent = losses;
-            document.getElementById('finalTies').textContent = ties;
-            document.getElementById('finalScore').textContent = score + ' 分';
-            
-            const comments = ['💪 别灰心', '😊 还不错', '👍 很好', '🏆 太强了'];
-            const idx = score >= 5 ? 3 : score >= 2 ? 2 : score >= 0 ? 1 : 0;
-            document.getElementById('finalComment').textContent = comments[idx];
-            
-            document.getElementById('exitModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('exitModal').style.display = 'none';
-        }
-
-        function restartGame() {
-            score = wins = losses = ties = 0;
-            round = 1;
-            history = [];
-            
-            document.getElementById('playerChoiceDisplay').textContent = '❓';
-            document.getElementById('playerChoiceName').textContent = '等待';
-            document.getElementById('computerChoiceDisplay').textContent = '❓';
-            document.getElementById('computerChoiceName').textContent = '等待';
-            document.getElementById('resultMessage').textContent = '';
-            document.getElementById('resultMessage').className = 'result-message';
-            
-            updateUI();
-            updateComputerPreview(null);
-            document.getElementById('historyList').innerHTML = '<div class="history-item">暂无记录</div>';
-            closeModal();
-        }
-
-        window.onclick = (e) => e.target === document.getElementById('exitModal') && closeModal();
+    function initQuiz() {
+        const container = document.getElementById('quizContainer');
+        const progressBar = document.getElementById('progressBar');
         
-        // 初始化
-        updateUI();
-        document.getElementById('historyList').innerHTML = '<div class="history-item">暂无记录</div>';
-    </script>
+        progressBar.style.display = 'block';
+
+        questions.forEach((q, index) => {
+            const div = document.createElement('div');
+            div.className = 'question-block';
+            div.id = `q-${index}`;
+            
+            let html = `<div class="question-title">${q.title}</div>`;
+            q.options.forEach(opt => {
+                html += `<button class="option-btn" onclick="handleOption('${opt.type}', ${index})">${opt.text}</button>`;
+            });
+            
+            div.innerHTML = html;
+            container.appendChild(div);
+        });
+
+        document.getElementById('q-0').classList.add('active');
+        updateProgress();
+    }
+
+    function handleOption(type, index) {
+        scores[type]++;
+        
+        // 隐藏当前题
+        document.getElementById(`q-${index}`).classList.remove('active');
+
+        if (index < questions.length - 1) {
+            // 显示下一题
+            currentStep++;
+            document.getElementById(`q-${currentStep}`).classList.add('active');
+            updateProgress();
+        } else {
+            // 题目做完，显示支付墙
+            document.getElementById('progressBar').style.display = 'none';
+            document.getElementById('payWall').style.display = 'block';
+        }
+    }
+
+    function updateProgress() {
+        const percent = ((currentStep + 1) / questions.length) * 100;
+        document.getElementById('progressFill').style.width = `${percent}%`;
+    }
+
+    function simulatePayment() {
+        // 这里对接真实的支付逻辑
+        // 模拟支付成功，计算结果
+        const maxType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+        showResult(maxType);
+    }
+
+    function showResult(type) {
+        document.getElementById('payWall').style.display = 'none';
+        const resPage = document.getElementById('resultPage');
+        const data = results[type];
+        
+        document.getElementById('resTitle').innerText = data.title;
+        document.getElementById('resDesc').innerText = data.desc;
+        document.getElementById('resScript').innerText = data.script;
+        
+        resPage.style.display = 'block';
+    }
+
+    // 初始化
+    initQuiz();
+
+</script>
+
 </body>
 </html>
